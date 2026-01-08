@@ -47,9 +47,6 @@ jobs:
       - name: Fix Permissions
         run: |
           sudo chown -R "$USER:" dist
-
-      - name: Package Artifact
-        run: |
           cd dist
           tar -czf pyinstaller-rpi-test-aarch64.tar.gz pyinstaller-rpi-test
 
