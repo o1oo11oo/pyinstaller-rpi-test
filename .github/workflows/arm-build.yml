@@ -43,8 +43,13 @@ jobs:
             ls -laF
             ls -laF dist
 
+      - name: Check Directory
+        run: |
+          ls -laF
+          ls -laF dist
+
       - name: Upload ARM artifact
         uses: actions/upload-artifact@v4
         with:
           name: arm-pyinstaller-test
-          path: dist/OnSpectra
+          path: dist/pyinstaller-rpi-test
