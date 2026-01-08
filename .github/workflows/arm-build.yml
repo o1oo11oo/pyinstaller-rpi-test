@@ -35,7 +35,8 @@ jobs:
               python3-tk \
               git
 
-            wget -qO- https://astral.sh/uv/install.sh | sh
+            wget -qO- https://astral.sh/uv/install.sh \
+              | env UV_UNMANAGED_INSTALL="$HOME/.local/bin/" sh
             $HOME/.local/bin/uv sync --group build --no-dev
 
             .venv/bin/pyinstaller main.spec
