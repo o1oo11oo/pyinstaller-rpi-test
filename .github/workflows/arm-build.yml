@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-arm:
+  build-rpi:
+    name: Build (rpi-aarch64)
     runs-on: ubuntu-latest
 
     steps:
@@ -16,7 +17,6 @@ jobs:
       - name: Build on ARM (QEMU)
         uses: pguyot/arm-runner-action@v2
         with:
-          #image: raspios_lite_arm64:latest
           cpu: cortex-a72
           base_image: raspios_lite_arm64:latest
           image_additional_mb: 1024
@@ -44,7 +44,7 @@ jobs:
             ls -laF
             ls -laF dist
 
-      - name: Fix Permissions
+      - name: Package Artifact
         run: |
           sudo chown -R "$USER:" dist
           cd dist
@@ -55,7 +55,7 @@ jobs:
           ls -laF
           ls -laF dist
 
-      - name: Upload ARM artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: pyinstaller-rpi-test
