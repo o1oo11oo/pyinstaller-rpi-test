@@ -6,8 +6,8 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[
-        (.env, '.'),
-        (test.json, '.'),
+        ('.env', '.'),
+        ('test.json', '.'),
     ],
     hiddenimports=[
         "matplotlib.backends.backend_tkagg",
