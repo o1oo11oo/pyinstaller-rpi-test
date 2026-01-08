@@ -32,11 +32,12 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y \
               python3 \
+              python3-pip \
               python3-tk \
               git
 
-            wget -qO- https://astral.sh/uv/install.sh | sh
-            $HOME/.local/bin/uv sync --group build --no-dev
+            pip install uv
+            uv sync --group build --no-dev
 
             .venv/bin/pyinstaller main.spec
 
