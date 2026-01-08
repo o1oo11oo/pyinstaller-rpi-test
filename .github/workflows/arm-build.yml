@@ -19,6 +19,7 @@ jobs:
           #image: raspios_lite_arm64:latest
           cpu: cortex-a72
           base_image: raspios_lite_arm64:latest
+          image_additional_mb: 1024
           shell: bash
           copy_artifact_path: "dist"
           commands: |
