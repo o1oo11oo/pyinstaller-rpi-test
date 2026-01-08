@@ -1,0 +1,57 @@
+name: ARM PyInstaller Test
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-arm:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build on ARM (QEMU)
+        uses: pguyot/arm-runner-action@v2
+        with:
+          #image: raspios_lite_arm64
+          #cpu: cortex-a72
+          #base_image: raspios_lite_arm64
+          #shell: bash
+          copy_artifact_path: "dist"
+          commands: |
+            set -eux
+
+            echo "System info:"
+            uname -a
+            python3 --version
+
+            sudo apt-get update
+            sudo apt-get install -y \
+              python3 \
+              python3-venv \
+              python3-tk \
+              libglib2.0-0 \
+              libgl1 \
+              libxrender1 \
+              libxext6 \
+              libsm6 \
+              git
+
+            python -m pip install --upgrade pip
+            pip install uv
+
+            uv sync --group build --no-dev
+
+            .venv/bin/pyinstaller main.spec
+
+            ls -laF
+            ls -laF dist
+
+      - name: Upload ARM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: arm-pyinstaller-test
+          path: dist/OnSpectra
