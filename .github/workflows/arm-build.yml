@@ -29,6 +29,12 @@ jobs:
             uname -a
             python3 --version
 
+            sudo apt-get update
+            sudo apt-get install -y \
+              python3 \
+              python3-tk \
+              git
+
             wget -qO- https://astral.sh/uv/install.sh | sh
             $HOME/.local/bin/uv sync --group build --no-dev
 
