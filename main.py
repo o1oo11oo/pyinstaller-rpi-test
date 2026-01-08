@@ -20,7 +20,7 @@ def main():
 
     basedir = Path(__file__).parent
 
-    env_path = basedir / ".env"
+    env_path = basedir / "test.env"
     config = dotenv_values(env_path)
 
     pydantic_path = basedir / "test.json"

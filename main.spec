@@ -6,7 +6,7 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[
-        ('.env', '.'),
+        ('test.env', '.'),
         ('test.json', '.'),
     ],
     hiddenimports=[
