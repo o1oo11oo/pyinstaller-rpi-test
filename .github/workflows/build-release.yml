@@ -6,6 +6,68 @@ on:
   workflow_dispatch:
 
 jobs:
+  build:
+    name: Build (${{ matrix.name }})
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        include:
+          - name: macos
+            os: macos-latest
+            pyinstaller: .venv/bin/pyinstaller
+            artifact: pyinstaller-rpi-test-macos
+            package_cmd: |
+              cd dist
+              ditto -c -k --sequesterRsrc --keepParent pyinstaller-rpi-test.app pyinstaller-rpi-test-macos.zip
+
+          - name: linux-x86_64
+            os: ubuntu-22.04
+            pyinstaller: .venv/bin/pyinstaller
+            artifact: pyinstaller-rpi-test-linux-x86_64
+            package_cmd: |
+              cd dist
+              tar -czf pyinstaller-rpi-test-linux-x86_64.tar.gz pyinstaller-rpi-test
+
+          - name: windows-x86_64
+            os: windows-latest
+            pyinstaller: .venv\Scripts\pyinstaller.exe
+            artifact: pyinstaller-rpi-test-windows-x86_64
+            package_cmd: |
+              cd dist
+              Compress-Archive pyinstaller-rpi-test pyinstaller-rpi-test-windows-x86_64.zip
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install uv
+        run: |
+          python -m pip install --upgrade pip
+          pip install uv
+
+      - name: Sync Dependencies (build only)
+        run: |
+          uv sync --group build --no-group dev
+
+      - name: Build With PyInstaller
+        run: ${{ matrix.pyinstaller }} main.spec
+
+      - name: Package Artifact
+        run: ${{ matrix.package_cmd }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            dist/${{ matrix.artifact }}.*
+
   build-rpi:
     name: Build (rpi-aarch64)
     runs-on: ubuntu-latest
@@ -55,5 +117,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: pyinstaller-rpi-test
+          name: pyinstaller-rpi-test-aarch64
           path: dist/pyinstaller-rpi-test-aarch64.tar.gz
