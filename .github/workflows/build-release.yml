@@ -27,6 +27,8 @@ jobs:
               ls -laF assets
               ls -laF assets/picotool
             package_cmd: |
+              ls -laF
+              ls -laF dist
               cd dist
               ditto -c -k --sequesterRsrc --keepParent pyinstaller-rpi-test.app pyinstaller-rpi-test-macos.zip
 
@@ -43,6 +45,8 @@ jobs:
               ls -laF assets
               ls -laF assets/picotool
             package_cmd: |
+              ls -laF
+              ls -laF dist
               cd dist
               tar -czf pyinstaller-rpi-test-linux-x86_64.tar.gz pyinstaller-rpi-test
 
@@ -57,6 +61,8 @@ jobs:
               gci -fo assets
               gci -fo assets/picotool
             package_cmd: |
+              gci -fo
+              gci -fo dist
               cd dist
               Compress-Archive pyinstaller-rpi-test pyinstaller-rpi-test-windows-x86_64.zip
 
