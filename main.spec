@@ -49,3 +49,8 @@ coll = COLLECT(
     upx_exclude=[],
     name='pyinstaller-rpi-test',
 )
+app = BUNDLE(
+    coll,
+    name='pyinstaller-rpi-test.app',
+    bundle_identifier=None,
+)
