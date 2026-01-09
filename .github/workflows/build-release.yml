@@ -17,24 +17,46 @@ jobs:
         include:
           - name: macos
             os: macos-latest
+            picotool_pattern: picotool-*-mac.zip
             pyinstaller: .venv/bin/pyinstaller
             artifact: pyinstaller-rpi-test-macos
+            extract_picotool_cmd: |
+              mkdir -p assets
+              ditto -xk picotool-*-mac.zip assets
+              chmod +x assets/picotool/picotool
+              rm -f assets/.keep
+              ls -laF assets
+              ls -laF assets/picotool
             package_cmd: |
               cd dist
               ditto -c -k --sequesterRsrc --keepParent pyinstaller-rpi-test.app pyinstaller-rpi-test-macos.zip
 
           - name: linux-x86_64
             os: ubuntu-22.04
+            picotool_pattern: picotool-*-x86_64-lin.tar.gz
             pyinstaller: .venv/bin/pyinstaller
             artifact: pyinstaller-rpi-test-linux-x86_64
+            extract_picotool_cmd: |
+              mkdir -p assets
+              tar -xf picotool-*-x86_64-lin.tar.gz -C assets
+              chmod +x assets/picotool/picotool
+              rm -f assets/.keep
+              ls -laF assets
+              ls -laF assets/picotool
             package_cmd: |
               cd dist
               tar -czf pyinstaller-rpi-test-linux-x86_64.tar.gz pyinstaller-rpi-test
 
           - name: windows-x86_64
             os: windows-latest
+            picotool_pattern: picotool-*-x64-win.zip
             pyinstaller: .venv\Scripts\pyinstaller.exe
             artifact: pyinstaller-rpi-test-windows-x86_64
+            extract_picotool_cmd: |
+              Expand-Archive -Path picotool-*-x64-win.zip -DestinationPath assets
+              Remove-Item -Force assets/.keep
+              gci -fo assets
+              gci -fo assets/picotool
             package_cmd: |
               cd dist
               Compress-Archive pyinstaller-rpi-test pyinstaller-rpi-test-windows-x86_64.zip
@@ -42,6 +64,15 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Download picotool
+        run: |
+          gh release download \
+            --repo raspberrypi/pico-sdk-tools \
+            --pattern "${{ matrix.picotool_pattern }}"
+
+      - name: Extract picotool
+        run: ${{ matrix.extract_picotool_cmd }}
 
       - name: Set Up Python
         uses: actions/setup-python@v5
@@ -77,6 +108,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Download picotool
+        run: |
+          gh release download \
+            --repo raspberrypi/pico-sdk-tools \
+            --pattern "picotool-*-aarch64-lin.tar.gz"
+
+      - name: Extract picotool
+        run: |
+          mkdir -p assets
+          tar -xf picotool-*-aarch64-lin.tar.gz -C assets
+          chmod +x assets/picotool/picotool
+          rm -f assets/.keep
+          ls -laF assets
+          ls -laF assets/picotool
 
       - name: Build on ARM (QEMU)
         uses: pguyot/arm-runner-action@v2

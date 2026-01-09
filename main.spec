@@ -8,6 +8,7 @@ a = Analysis(
     datas=[
         ('test.env', '.'),
         ('test.json', '.'),
+        ('assets', 'assets'),
     ],
     hiddenimports=[
         "matplotlib.backends.backend_tkagg",
