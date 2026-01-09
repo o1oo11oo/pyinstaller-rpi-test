@@ -66,9 +66,7 @@ jobs:
 
       - name: Download picotool
         run: |
-          gh release download \
-            --repo raspberrypi/pico-sdk-tools \
-            --pattern "${{ matrix.picotool_pattern }}"
+          gh release download --repo raspberrypi/pico-sdk-tools --pattern "${{ matrix.picotool_pattern }}"
         env:
           GH_TOKEN: ${{ github.token }}
 
