@@ -46,14 +46,11 @@ jobs:
 
       - name: Package Artifact
         run: |
+          ls -laF
           sudo chown -R "$USER:" dist
           cd dist
           tar -czf pyinstaller-rpi-test-aarch64.tar.gz pyinstaller-rpi-test
-
-      - name: Check Directory
-        run: |
           ls -laF
-          ls -laF dist
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
