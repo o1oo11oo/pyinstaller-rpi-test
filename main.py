@@ -95,6 +95,7 @@ def local_config_path(
     from source or from a PyInstaller bundle.
     """
     executable = None
+    bundle = None
 
     if getattr(sys, "frozen", False):
         executable = Path(sys.executable).resolve()
