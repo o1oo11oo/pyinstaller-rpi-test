@@ -22,12 +22,12 @@ class PydatenicTest(BaseModel):
 def main():
     print("Hello from pyinstaller-rpi-test!")
 
-    basedir = Path(__file__).parent
+    executable, bundle, base, local = local_config_path("local.json")
 
-    env_path = basedir / "test.env"
+    env_path = resource_path("test.env")
     config = dotenv_values(env_path)
 
-    pydantic_path = basedir / "test.json"
+    pydantic_path = resource_path("test.json")
     with pydantic_path.open("r") as f:
         content = f.read()
         pydtest = PydatenicTest.model_validate_json(content)
@@ -55,6 +55,10 @@ def main():
     root = tk.Tk()
     root.title("pyinstaller-rpi-test")
 
+    ttk.Label(root, text=f"{executable=}").pack()
+    ttk.Label(root, text=f"{bundle=}").pack()
+    ttk.Label(root, text=f"{base=}").pack()
+    ttk.Label(root, text=f"{local=}").pack()
     ttk.Label(root, text=f"{config=}").pack()
     ttk.Label(root, text=f"{pydtest=}").pack()
     ttk.Label(root, text=f"{sqlver=}").pack()
@@ -81,6 +85,36 @@ def main():
     )
 
     root.mainloop()
+
+
+def local_config_path(
+    relative: str | Path | None = None,
+) -> tuple[Path | None, Path | None, Path, Path]:
+    """
+    Return absolute path to config, whether running
+    from source or from a PyInstaller bundle.
+    """
+    executable = None
+
+    if getattr(sys, "frozen", False):
+        executable = Path(sys.executable).resolve()
+
+        # check for macOS bundle
+        if platform.system() == "Darwin":
+            bundle = executable.parent.parent.parent
+
+            if bundle.exists() and bundle.name.endswith(".app"):
+                base = bundle.parent
+            else:
+                base = executable.parent
+        else:
+            base = executable.parent
+    else:
+        base = Path(__file__).resolve().parent
+
+    res = base / relative if relative else base
+
+    return (executable, bundle, base, res)
 
 
 def resource_path(relative: str | Path) -> Path:
