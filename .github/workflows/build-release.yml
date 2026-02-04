@@ -44,6 +44,11 @@ jobs:
               rm -f assets/.keep
               ls -laF assets
               ls -laF assets/picotool
+
+              sudo cp assets/picotool/picotool /usr/local/bin/
+              ls -la F /Usr/local/bin/
+              which picotool
+              picotool version
             package_cmd: |
               ls -laF
               cd dist
