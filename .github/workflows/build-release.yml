@@ -46,7 +46,7 @@ jobs:
               ls -laF assets/picotool
 
               sudo cp assets/picotool/picotool /usr/local/bin/
-              ls -la F /Usr/local/bin/
+              ls -la F /usr/local/bin/
               which picotool
               picotool version
             package_cmd: |
